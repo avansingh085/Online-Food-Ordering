@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ocean Theme Variables */
+.ocean-theme {
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary-color: #0ea5e9;
+  --accent-color: #06b6d4;
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+}
+
+/* Ocean Theme Styles */
+.ocean-theme .bg-orange-500 { @apply bg-blue-600; }
+.ocean-theme .hover\:bg-orange-600:hover { @apply hover:bg-blue-700; }
+.ocean-theme .text-orange-500 { @apply text-blue-600; }
+.ocean-theme .text-orange-600 { @apply text-blue-700; }
+.ocean-theme .border-orange-500 { @apply border-blue-600; }
+.ocean-theme .focus\:ring-orange-500:focus { @apply focus:ring-blue-600; }
+.ocean-theme .from-orange-500 { @apply from-blue-600; }
+.ocean-theme .to-red-500 { @apply to-cyan-500; }
+.ocean-theme .from-orange-100 { @apply from-blue-50; }
+.ocean-theme .to-red-100 { @apply to-cyan-50; }
+.ocean-theme .bg-orange-100 { @apply bg-blue-100; }
+.ocean-theme .text-yellow-400 { @apply text-cyan-400; }
+.ocean-theme .bg-yellow-400 { @apply bg-cyan-400; }
+.ocean-theme .hover\:bg-yellow-500:hover { @apply hover:bg-cyan-500; }
+.ocean-theme .focus\:ring-yellow-400:focus { @apply focus:ring-cyan-400; }
+.ocean-theme .text-yellow-600 { @apply text-cyan-600; }
+.ocean-theme .bg-yellow-600 { @apply bg-cyan-600; }
