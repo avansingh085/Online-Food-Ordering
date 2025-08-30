@@ -6,15 +6,13 @@ import { ExtractJwt, Strategy } from "passport-jwt";
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      secretOrKey:'20534204e93e36c9c937716a2ca4b2da',
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), 
+      ignoreExpiration: false, 
+      secretOrKey: '20534204e93e36c9c937716a2ca4b2da', // ⚠️ hardcoded secret (not safe for production)
     });
-   
   }
 
-
   async validate(payload: any) {
-    return { id: payload.sub };
+    return { id: payload.sub }; 
   }
 }

@@ -14,6 +14,8 @@ export interface CustomizationOption {
 }
 
 export interface Customize {
+  itemId:string;
+  name:string;
   size: string[];
   options: CustomizationOption[];
 }
@@ -26,7 +28,7 @@ interface CustomizationCreatorProps {
 }
 
 const CustomizationCreator: React.FC<CustomizationCreatorProps> = ({
-  initialData = { size: [], options: [] },
+  initialData = { size: [], options: [],itemId:'',name:'' },
   onSubmit,
   onCancel,
   mode

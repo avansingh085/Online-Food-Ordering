@@ -20,4 +20,8 @@ export class CreateItemDto {
   @IsOptional()
   @IsString()
   image?: string;  
+
+
+  @IsString()
+  customizeId:string;
 }

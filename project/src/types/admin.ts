@@ -15,6 +15,15 @@ export interface SizeOption {
   price: number;
 }
 
+export interface updateCustomization {
+  _id:string;
+  size: SizeOption[];
+  name: string;
+  itemId: string;
+  options: CustomizationOption[];
+  
+}
+
 export interface CustomizationData {
   size: SizeOption[];
   name: string;
@@ -29,6 +38,7 @@ export interface MenuItem {
   price: number;
   image: string;
   discount: number;
+  customizationId:any
 }
 
 export interface Order {

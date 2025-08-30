@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiArrowLeft, FiBox } from 'react-icons/fi';
-import { MenuItem } from '../../types/admin';
-import CustomizationCreator from './customizationModels';
+import { MenuItem, updateCustomization } from '../../types/admin';
+
+
 import { demoBurgerCustomization } from '../../data/demoData';
 import CustomizationComponent from './customizations';
+import {Customize} from '../../components/CustomizeModel';
 
 interface MenuManagementProps {
     menuItems: MenuItem[];
-    updateMenuItem: (id: string, data: Partial<MenuItem>) => void;
-    addMenuItem: (item: MenuItem) => void;
+    updateMenuItem: (id: string, data: Partial<MenuItem>,customization:updateCustomization) => void;
+    addMenuItem: (item: MenuItem,customize:Customize) => void;
     deleteMenuItem: (id: string) => void;
 }
+
+interface FormFormate{
+    name:string;
+    description:string;
+    price:number;
+    image:string;
+    discount:number;
+}
+
+
 
 const MenuManagement: React.FC<MenuManagementProps> = ({
     menuItems,
@@ -22,7 +34,9 @@ const MenuManagement: React.FC<MenuManagementProps> = ({
     const [editForm, setEditForm] = useState<Partial<MenuItem>>({});
     const [showAddForm, setShowAddForm] = useState(false);
     const [showCustomization, setShowCustomization] = useState(false);
-    const [newItemForm, setNewItemForm] = useState<Omit<MenuItem, 'id'>>({
+    const [customizeData,setCustomizeData]=useState<any>()
+    console.log(menuItems)
+    const [newItemForm, setNewItemForm] = useState<FormFormate>({
         name: '',
         description: '',
         price: 0,
@@ -32,23 +46,32 @@ const MenuManagement: React.FC<MenuManagementProps> = ({
 
     const handleEditItem = (item: MenuItem) => {
         setEditingItem(item.id);
+        console.log(item)
+        setShowCustomization(true)
+        const cust={...item.customizationId};
+        delete cust['_id'];
+        setCustomizeData(item.customizationId)
         setEditForm(item);
     };
 
     const handleSaveEdit = () => {
         if (editingItem && editForm) {
-            updateMenuItem(editingItem, editForm);
+            console.log(customizeData,editForm)
+            updateMenuItem(editingItem, editForm,customizeData);
             setEditingItem(null);
+            setShowCustomization(false);
             setEditForm({});
         }
     };
-
+     
     const handleAddItem = () => {
         const newItem: MenuItem = {
             ...newItemForm,
-            id: Date.now().toString()
+            id: Date.now().toString(),
+            customizationId:''
         };
-        addMenuItem(newItem);
+       
+        addMenuItem(newItem,customizeData);
         setNewItemForm({
             name: '',
             description: '',
@@ -108,7 +131,7 @@ const MenuManagement: React.FC<MenuManagementProps> = ({
                     </div>
                     <div className="flex mt-4 space-x-2">
                         <button
-                            onClick={handleAddItem}
+                             onClick={handleAddItem}
                             className="flex items-center px-4 py-2 space-x-2 text-white bg-gray-900 rounded-lg hover:bg-gray-800"
                         >
                             <FiSave className="w-4 h-4" />
@@ -133,7 +156,7 @@ const MenuManagement: React.FC<MenuManagementProps> = ({
                 </div>
             )}
          {
-                            showCustomization && <CustomizationComponent customization={demoBurgerCustomization} />
+                            showCustomization && <CustomizationComponent customization={customizeData ? customizeData : demoBurgerCustomization} onCancel={()=>{}} onSave={(cust)=>{setCustomizeData(cust)}}  />
                         }
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {menuItems.map((item) => (
@@ -152,6 +175,12 @@ const MenuManagement: React.FC<MenuManagementProps> = ({
                                         type="number"
                                         value={editForm.price || 0}
                                         onChange={(e) => setEditForm(prev => ({ ...prev, price: Number(e.target.value) }))}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
+                                    />
+                                     <input
+                                        type="text"
+                                        value={editForm.image || ''}
+                                        onChange={(e) => setEditForm(prev => ({ ...prev, image: String(e.target.value).trim() }))}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
                                     />
                                     <textarea

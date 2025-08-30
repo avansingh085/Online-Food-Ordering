@@ -14,7 +14,6 @@ export class AuthController {
         return this.AuthService.createAccount(data);
     }
   
-    
     @Post('login')
     async login(@Body() data:UserLoginWithPasswordDto){
           console.log(await this.AuthService.loginWithPassword(data));

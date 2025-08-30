@@ -22,6 +22,9 @@ export class Item {
 
   @Prop({ required: false, unique: true, lowercase: true, trim: true })
   image?: string;
+  
+   @Prop({required:true,trim:true,ref:'Customize'})
+  customizationId:string;
 
 }
 

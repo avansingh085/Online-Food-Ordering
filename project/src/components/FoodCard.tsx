@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus, Star } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import  CustomizeCart  from './CustomizeModel';
+import ProductPage from './CustomizeCart';
 
 interface FoodItem {
   id: string;
@@ -9,27 +11,52 @@ interface FoodItem {
   price: number;
   image: string;
   discount: number | null;
+  customizationId:any
 }
 
 interface FoodCardProps {
   item: FoodItem;
 }
 
+
+export interface OptionChoice {
+  key: string;
+  value: boolean;
+  price: number;
+  isPresent: boolean;
+}
+
+export interface CustomizationOption {
+  title: string;
+  choices: OptionChoice[];
+}
+
+export interface SizeOption {
+  type: string;
+  price: number;
+}
+
+export interface Customize {
+  size: SizeOption[];
+  name: string;
+  itemId: string;
+  options: CustomizationOption[];
+}
+
 const FoodCard: React.FC<FoodCardProps> = ({ item }) => {
   const { addToCart } = useCart();
-
+   const [isShowModel,setIsShowModel]=useState(false);
+   const [customize,setCustomize]=useState<any>()
   const handleAddToCart = () => {
     addToCart({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      image: item.image,
-      category: "",
-      size: ""
+      itemId: item.id,
+      customize,
+      quantity:0
     });
   };
 
   return (
+    <>
     <div className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden border border-gray-200">
       <div className="relative overflow-hidden">
         <img
@@ -63,6 +90,13 @@ const FoodCard: React.FC<FoodCardProps> = ({ item }) => {
               </span>
             )}
           </div>
+            
+          <button 
+        onClick={() => setIsShowModel(!isShowModel)}
+        className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+      >
+        Customize Product
+      </button>
           <button
             onClick={handleAddToCart}
             className="bg-gray-900 text-white p-2.5 rounded-full hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 group shadow-sm"
@@ -71,7 +105,10 @@ const FoodCard: React.FC<FoodCardProps> = ({ item }) => {
           </button>
         </div>
       </div>
+     
     </div>
+     <ProductPage showCustomizer={isShowModel} setShowCustomizer={setIsShowModel} customization={item.customizationId}  itemId={item.id}/>
+    </>
   );
 };
 

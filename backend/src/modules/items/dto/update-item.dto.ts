@@ -26,5 +26,8 @@ export class UpdateItemDto {
   @IsString()
   image?: string;
 
+  @IsString()
+  customizeId?:string;
+
 
 }

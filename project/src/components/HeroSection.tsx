@@ -46,7 +46,7 @@ const HeroSection: React.FC = () => {
                   <div className="inline-block bg-orange-500 dark:bg-yellow-400 text-white dark:text-gray-900 px-4 py-2 rounded-full text-sm font-semibold mb-4 animate-pulse">
                     {slide.offer}
                   </div>
-                  <h1 className="text-4xl md:text-6xl font-bold mb-4 animate-fade-in">
+                  <h1 className="text-4xl md:text-6xl text-red-500 font-bold mb-4 animate-fade-in">
                     {slide.title}
                   </h1>
                   <p className="text-xl md:text-2xl mb-8 text-gray-200">

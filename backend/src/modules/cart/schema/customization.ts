@@ -41,7 +41,7 @@ export class CustomizationOption {
 export class Customize {
   @Prop({ required: false, unique: true, default: uuidv4 })
   id: string;
-
+  
   @Prop({ type: [SizeOption], default: [] })
   size: SizeOption[];
 

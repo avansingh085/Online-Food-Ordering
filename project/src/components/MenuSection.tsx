@@ -50,6 +50,7 @@ const MenuSection: React.FC = () => {
 
   return (
     <section className="py-16 bg-gray-50">
+      
       <div className="container mx-auto px-4">
         {/* Category Filters */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">

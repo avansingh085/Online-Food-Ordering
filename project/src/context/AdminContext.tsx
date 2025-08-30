@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { MenuItem } from '../data/menuData';
-import { menuItems as initialMenuItems } from '../data/menuData';
+
 import apiClient from '../api/apiClient';
+import { Customize } from '../components/CustomizeModel';
 
 interface AdminUser {
   id: string;
@@ -47,8 +48,8 @@ interface AdminContextType {
   isAdminAuthenticated: boolean;
   adminLogin: (username: string, password: string) => Promise<boolean>;
   adminLogout: () => void;
-  updateMenuItem: (id: string, updates: Partial<MenuItem>) => void;
-  addMenuItem: (item: Omit<MenuItem, 'id'>) => void;
+  updateMenuItem: (id: string, updates: Partial<MenuItem>,customization:Customize) => void;
+  addMenuItem: (item:MenuItem,customize:Customize) => void;
   deleteMenuItem: (id: string) => void;
   updateOffer: (id: string, updates: Partial<Offer>) => void;
   updateHeroSlide: (id: number, updates: Partial<HeroSlide>) => void;
@@ -69,7 +70,7 @@ const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(initialMenuItems);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [offers, setOffers] = useState<Offer[]>([
     {
       id: '1',
@@ -109,14 +110,14 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       id: 1,
       title: "Margherita Perfection",
       subtitle: "Fresh Mozzarella • Basil • Tomato Sauce",
-      image: "https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?auto=compress&cs=tinysrgb&w=800",
+      image: "https://www.dominos.co.in/blog/wp-content/uploads/2019/12/2020-Resolutions-Every-Pizza-Lover-Should-Stick-To-980x460.png",
       offer: "20% OFF"
     },
     {
       id: 2,
       title: "Ultimate Pepperoni",
       subtitle: "Premium Pepperoni • Extra Cheese • Crispy Crust",
-      image: "https://images.pexels.com/photos/2619970/pexels-photo-2619970.jpeg?auto=compress&cs=tinysrgb&w=800",
+      image: "https://www.shutterstock.com/shutterstock/videos/3801191607/thumb/7.jpg?ip=x480",
       offer: "Buy 1 Get 1"
     },
     {
@@ -181,22 +182,32 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setAdminUser(null);
   };
 
-  const updateMenuItem = (id: string, updates: Partial<MenuItem>) => {
+  const updateMenuItem = async (id: string, updates: Partial<MenuItem>,customization:any) => {
+    try{
+    await apiClient.put(`/admin/item/${id}/${updates.customizationId._id}`,{item:{...updates},customization})
     setMenuItems(prev => prev.map(item => 
       item.id === id ? { ...item, ...updates } : item
     ));
+  }catch(err)
+  {
+    console.log("failed to update item",err)
+  }
   };
 
-  const addMenuItem = (item: Omit<MenuItem, 'id'>) => {
-    const newItem: MenuItem = {
-      ...item,
-      id: `${item.discount}-${Date.now()}`
-    };
-    setMenuItems(prev => [...prev, newItem]);
+  const addMenuItem =async (item: MenuItem,customize:Customize) => {
+  
+    const resp=await apiClient.post('/admin/item',{item,customize});
+    setMenuItems(prev => [...prev, resp.data]);
   };
 
-  const deleteMenuItem = (id: string) => {
+  const deleteMenuItem = async (id: string) => {
+    try{
+    apiClient.delete(`/admin/item/${id}`)
     setMenuItems(prev => prev.filter(item => item.id !== id));
+    }catch(err)
+    {
+      console.log("failed to delete item",err)
+    }
   };
 
   const updateOffer = (id: string, updates: Partial<Offer>) => {
@@ -233,10 +244,9 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const getMenuItems =async () => {
    
-        const res=await  apiClient.get('/item/all');
-       return res.data;
-   
-
+        const res=await  apiClient.get('/user/item?page=1&limit=20');
+       return res.data.items;
+  
   };
   const getOffers = () => offers;
   const getHeroSlides = () => heroSlides;

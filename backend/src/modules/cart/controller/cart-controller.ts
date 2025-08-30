@@ -14,23 +14,28 @@ import {
 import { CartService } from '../service/cart-service';
 import { CreateCartDto } from '../dto/createCart.dto';
 import { JwtAuthGuard } from 'src/modules/auth/gaurds/jwt-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 
-@Controller('cart')
+
+@Controller('users/cart')
+@UseGuards(AuthGuard('jwt'))
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  @UseGuards(JwtAuthGuard)
+
   @Post('/')
-  async addToCart(@Req() req: any, @Body() cartData: CreateCartDto) {
-    const userId = req.user.userId; // comes from JwtStrategy
+  async addToCart(@Req() req: any, @Body() cartData: any) {
+    
+    const userId = req.user.id; // comes from JwtStrategy
     if (!userId || !cartData.itemId) {
       throw new BadRequestException('userId and itemId are required');
     }
     return await this.cartService.addToCart(
       userId,
       cartData.itemId,
-      cartData.customizationId,
+      cartData.customizedProduct,
+      cartData.quantity
     );
   }
 
@@ -40,7 +45,9 @@ export class CartController {
     @Req() req: any,
     @Query() ask: { page?: number; limit?: number },
   ) {
-    const userId = req.user.userId;
+   
+    const userId = req.user.id;
+    
     if (!userId) {
       throw new BadRequestException('userId is required');
     }
@@ -54,9 +61,9 @@ export class CartController {
     return this.cartService.deleteCart(id);
   }
 
-//   @UseGuards(JwtAuthGuard)
-//   @Put('/:id')
-//   async updateCart(@Param('id') id: string, @Body() updateCart: any) {
-//     return this.cartService.update(id, updateCart);
-//   }
+  @UseGuards(JwtAuthGuard)
+  @Put('/:id')
+  async updateCart(@Param('id') id: string, @Body() updateCart: any) {
+    return this.cartService.updateCart(id, updateCart);
+  }
 }

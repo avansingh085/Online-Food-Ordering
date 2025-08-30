@@ -1,4 +1,4 @@
-import { IsNotEmpty,IsString } from "class-validator";
+import { IsNotEmpty,IsNumber,IsString } from "class-validator";
 
 
 export class CreateCartDto{
@@ -13,4 +13,8 @@ export class CreateCartDto{
      @IsNotEmpty()
      @IsString()
      customizationId?:string;
+
+     @IsNotEmpty()
+     @IsNumber()
+     quantity:number;
 }

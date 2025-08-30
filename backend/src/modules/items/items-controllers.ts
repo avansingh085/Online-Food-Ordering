@@ -1,33 +1,42 @@
-import { Get,Post,Controller, Injectable, Body, Param ,Put} from "@nestjs/common";
+import { Get, Post, Controller, Body, Param, Put, Delete, BadRequestException, Query } from "@nestjs/common";
 import { CreateItemDto } from "./dto/create-item.dto";
 import { getItemDto } from "./dto/get-items.dto";
 import { UpdateItemDto } from "./dto/update-item.dto";
 import { ItemService } from "./items-service";
-@Injectable()
-@Controller('item')
+import { CustomizeService } from "../cart/service/customize-service";
+
+@Controller()
 export class ItemController {
+    constructor(private readonly itemService: ItemService) {}
 
-    constructor(private readonly itemService:ItemService){}
-
-    @Post()
-    async createItem(@Body() dto:CreateItemDto){
+    @Post('/admin/item')
+    async createItem(@Body() dto: any) {
+      console.log(dto)
         return this.itemService.createItem(dto);
     }
 
-    @Get()
-    async getItem(@Param() dto :getItemDto){
-
+    @Get('/user/item/:id')
+    async getItem(@Param('id') id: string) {
+        return this.itemService.getItem(id);
     }
 
-    @Get('all')
-    async getItems(){
-        return this.itemService.getItems();
+    @Get('/user/item')
+    async getItems(@Query() dto: {page:number,limit:number}) {
+        return this.itemService.getItems(dto);
     }
 
-    @Put()
-    async updateItem(@Param() dto :UpdateItemDto){
-       
-
+    @Put('/admin/item/:itemId/:customizationId')
+    async updateItem(@Param('itemId') itemId: string,@Param('customizationId') customizationId:string, @Body() dto:{item:UpdateItemDto,customization:any}) {
+      
+        const updatedData = await this.itemService.updateItem(itemId,customizationId, dto.item,dto.customization);
+        if (!updatedData) {
+            throw new BadRequestException('Failed to update item data');
+        }
+        return updatedData;
     }
 
+    @Delete('/admin/item/:id')
+    async deleteItem(@Param('id') id: string) {
+        return this.itemService.deleteItem(id);
+    }
 }

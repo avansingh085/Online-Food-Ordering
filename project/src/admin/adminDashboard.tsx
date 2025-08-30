@@ -12,6 +12,7 @@ import PlaceholderSection from './components/PlaceHolderSection';
 import { FiGift, FiImage } from 'react-icons/fi';
 import { useAdmin } from '../context/AdminContext';
 import Transactions from './components/Transactions';
+import customization from './services/customization';
 const AdminDashboard: React.FC = () => {
   const {
     adminUser,
@@ -28,14 +29,22 @@ const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [menuItems, setMenuItems] = useState<any[]>([]);
-
+  const [defaultCustomizationData,setDefaultCustomizationData]=useState<any>({itemId:"default",name:"default",options:[],size:[]})
   useEffect(() => {
-    const fetchMenuItems = async () => {
+    const fetchDashboard = async () => {
       const items = await getMenuItems();
+      const cust=await customization.getDefaultCustomization();
+      if(cust)
+      {
+        setDefaultCustomizationData(cust);
+      }
       setMenuItems(items);
     };
-    fetchMenuItems();
+    fetchDashboard();
+
   }, [getMenuItems]);
+
+  
 
   const stats = getDashboardStats();
   const orders = getOrders();
@@ -75,7 +84,7 @@ const AdminDashboard: React.FC = () => {
           />
         );
       case 'customizations':
-        return <CustomizationManager customization={demoSaladCustomization} />;
+        return <CustomizationManager customization={defaultCustomizationData} onCancel={()=>{}} onSave={customization.updateDefaultCustomization} />;
         case 'transactions':
   return <Transactions itemPerPage={20} />;
       default:

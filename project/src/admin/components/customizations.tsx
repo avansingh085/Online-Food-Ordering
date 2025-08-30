@@ -144,6 +144,7 @@ const CustomizationComponent: React.FC<CustomizeProps> = ({
 
   const handleSave = () => {
     if (onSave) {
+      
       onSave(formData);
     }
     setEditMode(false);

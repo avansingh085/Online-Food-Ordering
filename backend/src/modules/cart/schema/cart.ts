@@ -13,6 +13,9 @@ export class Cart {
 
   @Prop({ type: Types.ObjectId, ref: 'Customize', required: false })
   customizationId?: string;
+
+  @Prop({type:Number,default:1,min:1})
+  quantity?:number
 }
 
 export const CartSchema = SchemaFactory.createForClass(Cart);

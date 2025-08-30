@@ -8,15 +8,18 @@ import { CreateCustomizeDto } from "../dto/createCustomize.dto";
 @Injectable()
 export class CustomizeService {
   constructor(
-    @InjectModel(Customize.name) private readonly customizeModel: Model<CustomizeDocument>
+    @InjectModel(Customize.name) private readonly customizeModel: Model<CustomizeDocument>,
+    
   ) {}
 
   async createCustomize(customizeDto: CreateCustomizeDto) {
-    const customize = this.customizeModel.create(customizeDto);
+    const customize =await  this.customizeModel.create(customizeDto);
     return customize;
   }
 
-
+ async getDefaultCustomization(){
+    return await this.customizeModel.findOne({itemId:"default"})
+ }
   async updateCustomize(customizeId: string, customizeData: Partial<CreateCustomizeDto>) {
     const updated = await this.customizeModel
       .findByIdAndUpdate(customizeId, customizeData, { new: true })
@@ -38,6 +41,14 @@ export class CustomizeService {
     return customize;
   }
 
+  async updateDefaultCustomization(dto:any){
+    console.log(dto)
+    if(dto?._id)
+    { 
+      return await this.customizeModel.findByIdAndUpdate(dto._id,{name:dto.name,size:dto.size,options:dto.options},{upsert:true});
+    }
+      return await this.customizeModel.create(dto);
+  }
   async deleteCustomize(Id:string)
   {
        const isDelete=await this.customizeModel.findByIdAndDelete(Id);
