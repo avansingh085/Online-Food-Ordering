@@ -17,6 +17,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ setSidebarOpen, activeTab }) 
       case 'orders': return 'Orders Management';
       case 'customizations': return 'Customization Settings';
       case 'transactions': return 'Transactions';
+      case 'offers' : return 'Offers Management';
       default: return 'Admin Panel';
     }
   };

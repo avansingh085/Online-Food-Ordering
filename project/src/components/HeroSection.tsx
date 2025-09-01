@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useAdmin } from '../context/AdminContext';
+
+import heroService from '../admin/services/heroService';
 
 const HeroSection: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const { getHeroSlides } = useAdmin();
-  const heroSlides = getHeroSlides();
+  
+  const [heroSlides, setHeroSlides]=useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchSlides = async () => {
+
+      const slides = await heroService.getAllHeroSections();
+      if(Array.isArray(slides))
+      {
+        setHeroSlides(slides);
+      }
+    }
+    fetchSlides();
+  },[heroSlides])
   
 
   useEffect(() => {
@@ -28,7 +41,7 @@ const HeroSection: React.FC = () => {
       <div className="absolute inset-0">
         {heroSlides.map((slide, index) => (
           <div
-            key={slide.id}
+            key={slide._id}
             className={`absolute inset-0 transition-transform duration-700 ease-in-out ${
               index === currentSlide ? 'translate-x-0' : 
               index < currentSlide ? '-translate-x-full' : 'translate-x-full'
@@ -37,20 +50,20 @@ const HeroSection: React.FC = () => {
             <div className="relative h-full flex items-center">
               <div className="absolute inset-0 " />
               <img
-                src={slide.image}
-                alt={slide.title}
+                src={slide.heroImage}
+                alt={slide.heroTitle}
                 className="w-full h-full object-cover"
               />
               <div className="z-10 container mx-auto px-4 absolute">
                 <div className="max-w-2xl text-white ">
                   <div className="inline-block bg-orange-500 dark:bg-yellow-400 text-white dark:text-gray-900 px-4 py-2 rounded-full text-sm font-semibold mb-4 animate-pulse">
-                    {slide.offer}
+                    {slide?.heroDescription}
                   </div>
                   <h1 className="text-4xl md:text-6xl text-red-500 font-bold mb-4 animate-fade-in">
-                    {slide.title}
+                    {slide.heroTitle}
                   </h1>
                   <p className="text-xl md:text-2xl mb-8 text-gray-200">
-                    {slide.subtitle}
+                    {slide.heroSubtitle}
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4">
                     <button className="bg-orange-500 dark:bg-yellow-400 text-white dark:text-gray-900 px-8 py-4 rounded-full text-lg font-semibold hover:bg-orange-600 dark:hover:bg-yellow-500 transform hover:scale-105 transition-all duration-200">
@@ -67,7 +80,6 @@ const HeroSection: React.FC = () => {
         ))}
       </div>
 
-      {/* Navigation Arrows */}
       <button
         onClick={prevSlide}
         className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200 backdrop-blur-sm"
@@ -81,7 +93,6 @@ const HeroSection: React.FC = () => {
         <ChevronRight className="h-6 w-6" />
       </button>
 
-      {/* Dots Indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
         {heroSlides.map((_, index) => (
           <button

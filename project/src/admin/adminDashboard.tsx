@@ -13,6 +13,8 @@ import { FiGift, FiImage } from 'react-icons/fi';
 import { useAdmin } from '../context/AdminContext';
 import Transactions from './components/Transactions';
 import customization from './services/customization';
+import OfferManagementSystem from './components/offersSection';
+import HeroSectionManager from './components/heroSection';
 const AdminDashboard: React.FC = () => {
   const {
     adminUser,
@@ -71,22 +73,18 @@ const AdminDashboard: React.FC = () => {
         );
       case 'offers':
         return (
-          <PlaceholderSection
-            icon={<FiGift className="w-16 h-16 text-gray-300" />}
-            message="Offers management coming soon..."
+          <OfferManagementSystem
+            // icon={<FiGift className="w-16 h-16 text-gray-300" />}
+            // message="Offers management coming soon..."
           />
         );
       case 'hero':
         return (
-          <PlaceholderSection
-            icon={<FiImage className="w-16 h-16 text-gray-300" />}
-            message="Hero banners management coming soon..."
-          />
+          <HeroSectionManager/>
         );
-      case 'customizations':
-        return <CustomizationManager customization={defaultCustomizationData} onCancel={()=>{}} onSave={customization.updateDefaultCustomization} />;
-        case 'transactions':
-  return <Transactions itemPerPage={20} />;
+      case 'customizations':return <CustomizationManager customization={defaultCustomizationData} onCancel={()=>{}} onSave={customization.updateDefaultCustomization} />;
+        case 'transactions': return <Transactions itemPerPage={20} />;
+      
       default:
         return <DashboardStats stats={stats} orders={orders} />;
     }

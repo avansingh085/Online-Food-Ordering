@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AdminProvider, useAdmin } from '../context/AdminContext';
 import AdminLogin from '../admin/components/AdminLogin';
 import AdminDashboard from '../admin/adminDashboard';
+import { OffersProvider } from '../context/OffersContext';
 
 
 
@@ -19,7 +20,9 @@ const AdminContent: React.FC = () => {
 const Admin: React.FC = () => {
   return (
     <AdminProvider>
+      <OffersProvider>
       <AdminContent />
+      </OffersProvider>
     </AdminProvider>
   );
 };

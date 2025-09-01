@@ -3,6 +3,7 @@ import { MenuItem } from '../data/menuData';
 
 import apiClient from '../api/apiClient';
 import { Customize } from '../components/CustomizeModel';
+import heroService from '../admin/services/heroService';
 
 interface AdminUser {
   id: string;
@@ -55,7 +56,7 @@ interface AdminContextType {
   updateHeroSlide: (id: number, updates: Partial<HeroSlide>) => void;
   getMenuItems: () => Promise<MenuItem[]>;
   getOffers: () => Offer[];
-  getHeroSlides: () => HeroSlide[];
+  getHeroSlides: () => Promise<any[]>;
   getOrders: () => Order[];
   updateOrderStatus: (orderId: string, status: Order['status']) => void;
   getDashboardStats: () => {
@@ -216,7 +217,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     ));
   };
 
-  const updateHeroSlide = (id: number, updates: Partial<HeroSlide>) => {
+  const updateHeroSlide = async (id: number, updates: Partial<HeroSlide>) => {
+   
     setHeroSlides(prev => prev.map(slide => 
       slide.id === id ? { ...slide, ...updates } : slide
     ));
@@ -249,7 +251,9 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   
   };
   const getOffers = () => offers;
-  const getHeroSlides = () => heroSlides;
+  const getHeroSlides = async () => {
+    return await  heroService.getAllHeroSections();
+  };
   const getOrders = () => orders;
 
   return (

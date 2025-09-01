@@ -85,4 +85,4 @@ export interface PaginatedResponse<T>{
     data:T[];
     meta:PaginationMeta;
 }
-export type AdminTab = 'dashboard' | 'menu' | 'offers' | 'hero' | 'orders' | 'customizations' |'transactions';
+export type AdminTab = 'dashboard' | 'menu' | 'offers' | 'hero' | 'orders' | 'customizations' |'transactions' ;
